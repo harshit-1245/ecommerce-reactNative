@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable, ScrollView } from 'react-native';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios"
 
 const LoginScreen = () => {
+  const [data,setData]=useState([])
   const navigation = useNavigation();
   const [user, setUser] = useState({
     email: '',
@@ -17,6 +19,26 @@ const LoginScreen = () => {
     });
   };
 
+  const getApi = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/user');
+      setData(response.data)
+      console.log(response.data);
+     
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      
+    }
+  };
+
+ getApi()
+  
+ 
+
+  const handleLogin=()=>{
+    
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -26,8 +48,8 @@ const LoginScreen = () => {
             source={require('../assets/ecommerceImages/amazon.png')}
           />
         </View>
-        <View>
-          <Text style={{ fontSize: 17, fontWeight: "bold", marginTop: 12, color: '#041E42' }}>Log In to your account</Text>
+        <View style={{ alignItems: 'center', marginTop: 12 }}>
+          <Text style={{ fontSize: 17, fontWeight: "bold", color: '#041E42' }}>Log In to your account</Text>
         </View>
         <View style={{ paddingHorizontal: 20 }}>
           <View style={{ marginTop: 70 }}>
@@ -58,7 +80,9 @@ const LoginScreen = () => {
             <Text style={{ color: '#007FFF', fontWeight: "500" }}>Forgot password</Text>
           </View>
           <View style={{ marginTop: 80 }} />
-          <Pressable style={{ width: 200, backgroundColor: '#FEBE10', borderRadius: 6, marginLeft: "auto", marginRight: "auto", padding: 15 }}>
+          <Pressable
+          onPress={handleLogin}
+           style={{ width: 200, backgroundColor: '#FEBE10', borderRadius: 6, marginLeft: "auto", marginRight: "auto", padding: 15 }}>
             <Text style={{ textAlign: "center", color: "white", fontSize: 16, fontWeight: "bold" }}>Login</Text>
           </Pressable>
           <Pressable
