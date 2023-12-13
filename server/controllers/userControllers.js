@@ -2,38 +2,15 @@ const asyncHandler=require('express-async-handler')
 const jwt=require('jsonwebtoken')
 const bcrypt=require('bcrypt')
 const crypto=require('crypto')
-const nodemailer=require('nodemailer')
+
 const User = require( '../models/userModel' )
 const Order=require('../models/order')
 const { text } = require( 'body-parser' )
 
+const secretKey="your_secret_key"
+
 //function to send verification email to the user
-const sendVerificationEmail=async(email,verificationToken)=>{
-//create a nodemailer
 
-const transporter=nodemailer.createTransport({
-  service:"gmail",
-  auth:{
-    user:"harshitsingh@gmail.com",
-    pass:"fnxk tzte ehab eblj",
-  }
-})
-//compose the email message
-const mailOptions={
-  from:"amazon.com",
-  to:email,
-  subject:"Email Verification",
-  text:`Please click the following link for verification : http://localhost:5000/verify/${verificationToken}`,
-};
-//send the mail
-try {
-  await transporter.sendMail(mailOptions)
-} catch (error) {
-  console.log("Error sending verification",error)
-}
-
-
-}
 
 const getUser = asyncHandler(async (req, res) => {
    try {
@@ -50,26 +27,29 @@ const getUser = asyncHandler(async (req, res) => {
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(400).json({ message: "Email already exists" });
+    return res.status(400).json({ message: 'Email already exists' });
   }
 
   // Generate a more secure verification token
-  const verificationToken = require('crypto').randomBytes(32).toString('hex');
+  const verificationToken = crypto.randomBytes(32).toString('hex');
 
   try {
+    // Hash the password before storing
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create a new User
-    const newUser = new User({ name, email, password, verificationToken });
-    
+    const newUser = new User({ name, email, password: hashedPassword, verificationToken });
+
     // Save the new user
     await newUser.save();
 
     // Send verification email to the user
-    sendVerificationEmail(newUser.email, newUser.verificationToken);
+    
 
     // Return a success message or the created user
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
-    res.status(500).json({ message: "Failed to create user" });
+    res.status(500).json({ message: 'Failed to create user' });
   }
 });
 
@@ -96,8 +76,27 @@ const verifying=asyncHandler(async(req,res)=>{
 
 
 
-const loginUser=asyncHandler(async(req,res)=>{
+const loginUser = asyncHandler(async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // Check if the user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
 
-})
+    // Compare hashed password
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Generate token
+    const token = jwt.sign({ userId: user._id }, secretKey);
+    res.status(200).json({ token });
+  } catch (error) {
+    res.status(500).json({ message: 'Login Failed' });
+  }
+});
 
 module.exports={createUser,getUser,loginUser,verifying}
