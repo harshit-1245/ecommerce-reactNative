@@ -21,7 +21,10 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
+
+
   const handleLogin=async()=>{
+    
     try {
       const response=await axios.post('http://192.168.29.163:5000/user/login',{
         email: email,
@@ -43,7 +46,21 @@ const LoginScreen = () => {
     }
   }
 
- 
+ // checing login successfull or not
+useEffect(()=>{
+  const checkLoginStatus=async()=>{
+         try {
+           const token=await AsyncStorage.getItem("authToken");
+           if(token){
+             navigation.replace("Main");
+           }
+         } catch (error) {
+            Alert.alert("You are not verified");
+         }
+  }
+  checkLoginStatus();
+},[])
+
 
   return (
     <SafeAreaView
