@@ -126,7 +126,7 @@ if (open) {
         <Text style={{height:1,borderColor:"#D0D0D0",borderWidth:2,marginTop:15}} />
             
             {/* Todays deal section */}
-             <Text style={{padding:10,fontSize:18,fontWeight:"bold"}}>Today's Deal</Text>
+             <Text style={{padding:10,fontSize:19,fontWeight:"bold"}}>Today's Deal</Text>
              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
              {offers.map((item,index)=>(
               <Pressable key={index} style={{marginVertical:10,alignItems:"center",justifyContent:"center"}} >
