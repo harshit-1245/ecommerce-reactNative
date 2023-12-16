@@ -11,9 +11,15 @@ import {deals} from "../Products/deals"
 import {offers} from "../Products/offers"
 import axios from "axios"
 import DropDownPicker from "react-native-dropdown-picker"
+import { useNavigation } from "@react-navigation/native";
+import {useSelector} from "react-redux"
+
+
+
 
 
 const HomeScreen = () => {
+  const navigation=useNavigation()
   const [open,setOpen]=useState(false);
   const [category,setCategory]=useState("jwelery")
   const [items, setItems] = useState([
@@ -50,6 +56,10 @@ const HomeScreen = () => {
 const onGenderOpen= useCallback(()=>{
    setOpen(!open)
 },[])
+ //using useSelector
+ const cart=useSelector((state)=>state.cart.cart)
+ 
+
 const pickerStyle = {
   borderColor: "#B7B7B7",
   height: 30,
@@ -114,7 +124,21 @@ if (open) {
          <Text style={{padding:10,fontSize:18,fontWeight:"bold"}}>Trending Deals of the week</Text>
          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           {deals.map((item,index) => (
-            <Pressable key={index} style={{ width: '50%', padding: 5 }}>
+            <Pressable 
+            onPress={()=>
+            navigation.navigate("Info",{
+              id: item.id,
+              title: item.title,
+              price: item?.price,
+              carouseImages: item?.carouselImages,
+              color:item?.color,
+              size: item?.size,
+              oldPrice: item?.oldPrice,
+              item : item,
+
+            })
+            }
+            key={index} style={{ width: '50%', padding: 5 }}>
               <Image
                 style={{ width: '100%', height: 200, resizeMode: "cover" }} // Adjust dimensions and resizeMode as needed
                 source={{ uri: item?.image }}
@@ -129,7 +153,19 @@ if (open) {
              <Text style={{padding:10,fontSize:19,fontWeight:"bold"}}>Today's Deal</Text>
              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
              {offers.map((item,index)=>(
-              <Pressable key={index} style={{marginVertical:10,alignItems:"center",justifyContent:"center"}} >
+              <Pressable 
+              //we are sending offer details nothing else
+              onPress={()=>navigation.navigate("Info",{
+                id:item?.id,
+                title:item?.title,
+                price:item?.price,
+                carouseImages: item?.carouselImages, //we can design the image using this
+                color: item?.color,
+                size: item?.size,
+                oldPrice: item?.oldPrice,
+                item:item, //this is helpful redux
+              })}
+              key={index} style={{marginVertical:10,alignItems:"center",justifyContent:"center"}} >
                 <Image style={{width:150,height:150,resizeMode:"contain"}} source={{uri:item?.image}} />
                <View 
                style={{backgroundColor:"#E31837",
@@ -177,15 +213,20 @@ if (open) {
           />
         </View>
 
-
+          
              {/* Product section */}
-             <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-        {filter.map((item, index) => (
-          <View key={index} style={{ width: '48%', marginBottom: 10 }}>
-            <ProductItem item={item} />
-          </View>
-        ))}
-      </View>
+            
+             <View 
+             
+             style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+       {filter.map((item, index) => (
+         <View key={index} style={{ width: '48%', marginBottom: 10 }}>
+           <ProductItem item={item} />
+         </View>
+       ))}
+     </View>
+          
+            
       </ScrollView>
     </SafeAreaView>
   )
