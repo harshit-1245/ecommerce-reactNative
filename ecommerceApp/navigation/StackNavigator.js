@@ -10,6 +10,8 @@ import HomeScreen from '../screens/HomeScreen'
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import ProductScreen from '../screens/ProductScreen';
+import AddAddressScreen from '../screens/AddAddressScreen';
+import AddressScreen from '../screens/AddressScreen';
 
 
 //--------------------> more like react routing
@@ -78,6 +80,8 @@ const StackNavigator = () => {
         <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown:false}} />
         <Stack.Screen name="Main" component={BottomTabs} options={{headerShown:false}} />
         <Stack.Screen name='Info' component={ProductScreen}  options={{headerShown:false}}/>
+        <Stack.Screen name='Address' component={AddAddressScreen} options={{headerShown:false}} />
+        <Stack.Screen name='Add' component={AddressScreen}  options={{headerShown:false}}/>
     </Stack.Navigator>
    </NavigationContainer>
   )

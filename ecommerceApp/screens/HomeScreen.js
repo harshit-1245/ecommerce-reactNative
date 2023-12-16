@@ -13,6 +13,9 @@ import axios from "axios"
 import DropDownPicker from "react-native-dropdown-picker"
 import { useNavigation } from "@react-navigation/native";
 import {useSelector} from "react-redux"
+import {BottomModal, ModalContent, SlideAnimation} from "react-native-modals"
+import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 
 
@@ -32,6 +35,8 @@ const HomeScreen = () => {
   
 
   const [products, setProducts] = useState([]);
+
+  const [modalVisible,setModelVisible]=useState(false)
 
   useEffect(()=>{
     const fetchApi=async()=>{
@@ -78,6 +83,8 @@ if (open) {
 
 
   return (
+
+    <>
     <SafeAreaView style={{paddingTop:Platform.OS === 'android' ? 40 :0,flex:1,backgroundColor:"white"}} >
       <ScrollView>
         {/* This is search bar in top side */}
@@ -90,13 +97,15 @@ if (open) {
 
         </View>
         {/* Address part in here */}
-        <View style={{flexDirection:"row",alignItems:"center",gap:5,padding:10,backgroundColor:"#AFEEEE"}}>
+        <Pressable 
+         onPress={()=>setModelVisible(!modalVisible)}
+        style={{flexDirection:"row",alignItems:"center",gap:5,padding:10,backgroundColor:"#AFEEEE"}}>
         <EvilIcons name="location" size={24} color="black" />
         <Pressable>
           <Text style={{fontSize:13,fontWeight:"500"}}>Deliver to Harshit -Varansi 232103</Text>
         </Pressable>
         <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
-        </View>
+        </Pressable>
         {/* scroll categories width scroll horizontally */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={{flexDirection:"row"}}>
@@ -229,6 +238,61 @@ if (open) {
             
       </ScrollView>
     </SafeAreaView>
+
+    {/*Now designing Bottom MOdals  */}
+
+   <BottomModal
+    onBackdropPress={()=>setModelVisible(!modalVisible)}
+    swipeDirection={["up","down"]}
+    swipeThreshold={200}
+    modalAnimation={
+      new SlideAnimation({
+        slideFrom:"bottom"
+      })
+    }
+    onHardwareBackPress={()=>setModalVisible(!modalVisible)}
+    visible={modalVisible}
+    onTouchOutside={()=>setModelVisible(!modalVisible)}
+   >
+    {/* You will see after animation has done */}
+       <ModalContent  style={{width:"100%",height:400}}>
+             <View style={{marginBottom:8}}>
+              <Text style={{fontSize:16,fontWeight:"500"}}>Choose your Location</Text>
+
+              <Text style={{marginTop:5,fontSize:16,color:"gray"}}>Select a delivery loaction to see product vailability and delivery options </Text>
+             </View>
+             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {/* Already added addresses */}
+
+              <Pressable 
+              onPress={()=>{
+                setModelVisible(false);
+                navigation.navigate("Address");
+              }}
+              style={{width:140,height:140,borderColor:"#D0D0D0",marginTop:10,borderWidth:1,padding:10,
+            justifyContent:"center",alignItems:"center"}}>
+                <Text style={{textAlign:"center",color:"#066b2",fontWeight:"500"}}>Add an Address or pick-up point</Text>
+
+              </Pressable>
+             </ScrollView>
+             <View>
+              <View style={{flexDirection:"row",alignItems:"center",gap:5}}>
+              <EvilIcons name="location" size={24} color="black" />
+              <Text style={{color:"#006b2",fontWeight:"400"}}>Enter Indian Pincode</Text>
+              </View>
+              <View style={{flexDirection:"row",alignItems:"center",gap:5}}>
+              <Ionicons name="locate" size={24} color="#0066b2" />
+              <Text style={{color:"#006b2",fontWeight:"400"}}>Use my current location</Text>
+              </View>
+              <View style={{flexDirection:"row",alignItems:"center",gap:5}}>
+              <AntDesign name="earth" size={24} color="#0066b2" />
+              <Text style={{color:"#006b2",fontWeight:"400"}}>Deliver outside India</Text>
+              </View>
+              
+             </View>
+       </ModalContent>
+   </BottomModal>
+    </>
   )
 }
 

@@ -26,7 +26,7 @@ const ProductScreen = () => {
         },6000)
    }
    const cart=useSelector((state)=>state.cart.cart)
-   console.log(cart)
+
 
 
   return (
