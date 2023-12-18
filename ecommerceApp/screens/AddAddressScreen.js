@@ -53,7 +53,7 @@ const AddAddressScreen = () => {
 
                <Pressable>
                 {/* adding address */}
-
+         
                </Pressable>
 
        </View>
