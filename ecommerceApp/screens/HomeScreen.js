@@ -2,7 +2,7 @@ import { View, Text, SafeAreaView, Platform, ScrollView, Pressable, TextInput, I
 import { Feather } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {SliderBox} from "react-native-image-slider-box"
 import ProductItem from "../productItem/ProductItem"
 import { list } from '../Products/list';
@@ -16,12 +16,16 @@ import {useSelector} from "react-redux"
 import {BottomModal, ModalContent, SlideAnimation} from "react-native-modals"
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from 'jwt-decode';
+import { UserType } from '../UserContext';
 
 
 
 
 
 const HomeScreen = () => {
+  const {userId,setUserId}=useContext(UserType)
   const navigation=useNavigation()
   const [open,setOpen]=useState(false);
   const [category,setCategory]=useState("jwelery")
@@ -51,6 +55,10 @@ const HomeScreen = () => {
     }
     fetchApi();
   },[])
+
+
+
+
 
   const filterProduct=(cat)=>{
     const updateList=products.filter((x)=>x.category === cat);

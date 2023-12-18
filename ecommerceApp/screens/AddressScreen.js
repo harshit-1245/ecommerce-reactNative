@@ -22,14 +22,14 @@ const AddressScreen = () => {
     //all you need to just decode json webtoken 
     const fetchUser = async () => {
         const token =await AsyncStorage.getItem("authToken")
-        
+        setUserId("6579b6c6705225971ae2e118")
         
         
     };
 
     fetchUser();
   }, []);
-setUserId("6579b6c6705225971ae2e118")
+
 
 
 const addingAddress=()=>{
@@ -38,36 +38,45 @@ const addingAddress=()=>{
     setAddedAddress(false)
   },1000);
 }
-const handleAddress=()=>{
-   const address={
+const handleAddress = async () => {
+  const address = {
     name,
     mobileNo,
     houseNo,
     street,
     landmark,
     postalCode
-   }
+  };
 
-   axios.post("http://192.168.29.163:5000/user/addresses",{
-    userId,address
-   })
-   .then((response)=>{
-    Alert.alert("Success","Address added successfully")
-    setName("")
-    setMobileNo("")
-    setHouseNo("")
-    setStreet("")
-    setLandmark("")
-    setPostalCode("")
-      
-     setTimeout(() => {
-       navigation.goBack();
-     }, 500);
+  try {
+    const authToken = await AsyncStorage.getItem("authToken");
+    const response = await axios.post(
+      "http://192.168.29.163:5000/user/addresses",
+      { userId, address },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}` // Send the token in the headers for authentication
+        }
+      }
+    );
 
-   }).catch((error)=>{
-    console.error(error)
-   })
-}
+    Alert.alert("Success", "Address added successfully");
+    setName("");
+    setMobileNo("");
+    setHouseNo("");
+    setStreet("");
+    setLandmark("");
+    setPostalCode("");
+
+    setTimeout(() => {
+      navigation.goBack();
+    }, 500);
+  } catch (error) {
+    Alert.alert("Error", "Failed to add address");
+    console.log("error", error);
+  }
+};
+
 
 
 
