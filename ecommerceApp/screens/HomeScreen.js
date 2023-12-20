@@ -6,6 +6,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {SliderBox} from "react-native-image-slider-box"
 import ProductItem from "../productItem/ProductItem"
 import { list } from '../Products/list';
+import { Entypo } from '@expo/vector-icons';
 import {images} from "../Products/imagesForSlide"
 import {deals} from "../Products/deals"
 import {offers} from "../Products/offers"
@@ -26,7 +27,9 @@ import { UserType } from '../UserContext';
 
 const HomeScreen = () => {
   const {userId,setUserId}=useContext(UserType)
+  const [selectedAddress,setSelectedAddress]=useState("")
   const navigation=useNavigation()
+  const [addresses,setAddresses]=useState([]);
   const [open,setOpen]=useState(false);
   const [category,setCategory]=useState("jwelery")
   const [items, setItems] = useState([
@@ -36,7 +39,7 @@ const HomeScreen = () => {
     { label: "women's clothing", value: "women's clothing" },
   ]);
   const [filter,setFilter]=useState([])
-  
+  setUserId("6579b6c6705225971ae2e118")
 
   const [products, setProducts] = useState([]);
 
@@ -56,7 +59,23 @@ const HomeScreen = () => {
     fetchApi();
   },[])
 
+//fetching address
 
+useEffect(()=>{
+    if(userId){
+      fetchAddress()
+    }
+},[userId,modalVisible])
+const fetchAddress=async()=>{
+  try {
+     const response=await axios.get(`http://192.168.77.201:5000/user/address/${userId}`)
+      const {addresses} = response.data;
+
+      setAddresses(addresses)
+  } catch (error) { 
+    console.error(error)
+  }
+}
 
 
 
@@ -110,7 +129,13 @@ if (open) {
         style={{flexDirection:"row",alignItems:"center",gap:5,padding:10,backgroundColor:"#AFEEEE"}}>
         <EvilIcons name="location" size={24} color="black" />
         <Pressable>
-          <Text style={{fontSize:13,fontWeight:"500"}}>Deliver to Harshit -Varansi 232103</Text>
+          <Text style={{fontSize:13,fontWeight:"500"}}>
+            {selectedAddress ? (
+              <Text style={{fontSize:13,fontWeight:"500"}}>Deliver to {selectedAddress?.name} - {selectedAddress?.street}</Text>
+            ):(
+              <Text style={{fontSize:13,fontWeight:"500"}}>Deliver To HarryBrook - Varanasi 232103</Text>
+            )}
+          </Text>
         </Pressable>
         <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
         </Pressable>
@@ -271,7 +296,34 @@ if (open) {
              </View>
              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {/* Already added addresses */}
-
+                  {addresses.map((item,index)=>(
+                     <Pressable 
+                      onPress={()=>{
+                        setSelectedAddress(item)
+                        setModelVisible(false)
+                      }}
+                     key={index} style={{
+                      width:140,
+                      height:140,
+                      borderColor:"#D0D0D0",
+                      borderWidth:1,
+                      padding:10,
+                      justifyContent:"center",
+                      alignItems:"center",
+                      gap:3,
+                      marginRight:15,
+                      marginTop:10,
+                      backgroundColor:selectedAddress === item ? "pink":"white" //good contion i learned
+                     }}>
+                       <View style={{flexDirection:"row",alignItems:"center",gap:3}}>
+                      <Text style={{fontSize:15,fontWeight:"bold"}}>{item?.name}</Text>
+                      <Entypo name="location-pin" size={24} color="redng bh h" />
+                    </View>
+                    <Text numberOfLines={1} style={{width:130,fontSize:13,textAlign:"center"}}>{item?.houseNo},{item?.landmark}</Text>
+                    <Text numberOfLines={1} style={{width:130,fontSize:13,textAlign:"center"}}>{item?.street}</Text>
+                    <Text numberOfLines={1} style={{width:130,fontSize:13,textAlign:"center"}}>India,Varanasi</Text>
+                     </Pressable>
+                  ))}
               <Pressable 
               onPress={()=>{
                 setModelVisible(false);

@@ -7,7 +7,7 @@ router.route('/verify/:token').get(verifying)
 router.route('/register').post(createUser);
 router.route('/login').post(loginUser)
 router.route('/addresses').post(saveAddress)
-router.route('/addresses/:userId').get(getAdrress)
+router.route('/address/:userId').get(getAdrress)
 
 
 

@@ -51,7 +51,7 @@ const handleAddress = async () => {
   try {
     const authToken = await AsyncStorage.getItem("authToken");
     const response = await axios.post(
-      "http://192.168.29.163:5000/user/addresses",
+      "http://192.168.77.201:5000/user/addresses",
       { userId, address },
       {
         headers: {

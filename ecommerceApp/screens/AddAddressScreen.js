@@ -3,6 +3,7 @@ import React, { useEffect, useState,useContext, useId } from 'react'
 import {Feather} from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import { Entypo } from '@expo/vector-icons';
 import axios from "axios"
 import { UserType } from '../UserContext';
 
@@ -16,17 +17,18 @@ const AddAddressScreen = () => {
   
     const fetchAddress=async()=>{
       try {
-         const response=await axios.get('http://192.168.29.163:5000/user/addresses/6579b6c6705225971ae2e118')
-          setAddresses(response.data)
-      } catch (error) {
+         const response=await axios.get(`http://192.168.77.201:5000/user/address/${userId}`)
+          const {addresses} = response.data;
+
+          setAddresses(addresses)
+      } catch (error) { 
         console.error(error)
       }
     }
   useEffect(()=>{
     fetchAddress()
-  })
+  },[])
 
-  console.log(addresses)
  
 
   return (
@@ -62,7 +64,34 @@ const AddAddressScreen = () => {
 
                <Pressable>
                 {/* adding address */}
-         
+                 {addresses?.map((item,index)=>(
+                  <Pressable key={index}
+                  style={{borderWidth:1,borderColor:"#D0D0D0",padding:10,flexDirection:"column",gap:5,marginVertical:5}}
+                  >
+                    <View style={{flexDirection:"row",alignItems:"center",gap:3}}>
+                      <Text style={{fontSize:15,fontWeight:"bold"}}>{item?.name}</Text>
+                      <Entypo name="location-pin" size={24} color="redng bh h" />
+                    </View>
+                    <Text style={{fontSize:15,color:"#181818"}}>{item?.houseNo},{item?.landmark}</Text>
+                    <Text style={{fontSize:15,color:"#181818"}}>{item?.street}</Text>
+                    <Text style={{fontSize:15,color:"#181818"}}>India,Varanasi</Text>
+                    <Text style={{fontSize:15,color:"#181818"}}>{item?.mobileNo}</Text>
+                    <Text style={{fontSize:15,color:"#181818"}}>{item?.postalCode}</Text>
+
+                    <View style={{flexDirection:"row",alignItems:"center",gap:10,marginTop:7}}>
+                      <Pressable style={{backgroundColor:"#F5F5F5",paddingHorizontal:10,paddingVertical:6,borderRadius:5,borderWidth:0.9,borderColor:"#D0D0D0",alignItems:"center"}}>
+                             <Text>Edit</Text>
+                      </Pressable>
+                      <Pressable style={{backgroundColor:"#F5F5F5",paddingHorizontal:10,paddingVertical:6,borderRadius:5,borderWidth:0.9,borderColor:"#D0D0D0",alignItems:"center"}}>
+                             <Text>Remove</Text>
+                      </Pressable>
+                      <Pressable style={{backgroundColor:"#F5F5F5",paddingHorizontal:10,paddingVertical:6,borderRadius:5,borderWidth:0.9,borderColor:"#D0D0D0",alignItems:"center"}}>
+                             <Text>Set as default</Text>
+                      </Pressable>
+                    </View>
+
+                  </Pressable>
+                 ))}
                </Pressable>
 
        </View>
