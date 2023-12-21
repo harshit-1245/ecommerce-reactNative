@@ -20,20 +20,27 @@ export const CartSlice=createSlice({
             const removeItem=state.cart.filter((item)=>item.id!==action.payload.id) // Filtering out the item to remove from the cart
             state.cart = removeItem; // Updating the cart by removing the specified item
         },
-        incrementQuantity:(state,action)=>{ // Reducer function to increment the quantity of an item in the cart
-            const itemPresent=state.cart.find((item)=>item.id === action.payload.id); // Finding the item in the cart
-            itemPresent++; // Incrementing the quantity of the item (There's an issue here, should increment the quantity, not the item itself)
-        },
-        decrementQuantity:(state,action)=>{ // Reducer function to decrement the quantity of an item in the cart
-            const itemPresent=state.cart.find((item)=>item.id ===action.payload.id) // Finding the item in the cart
-            if(itemPresent.quantity === 1){ // Checking if the quantity is 1
-                itemPresent.quantity = 0; // Setting the quantity to 0 if it's 1
-                const removeFromCart = state.cart.filter((item)=>item.id === action.payload.id); // Filtering out the item to remove from the cart
-                state.cart = removeFromCart; // Updating the cart by removing the specified item
-            }else{
-                itemPresent.quantity--; // Decrementing the quantity of the item in the cart
+        incrementQuantity: (state, action) => {
+            const itemPresent = state.cart.find((item) => item.id === action.payload.id);
+        
+            if (itemPresent) {
+                itemPresent.quantity++; // Incrementing the quantity of the found item
             }
         },
+        
+        decrementQuantity: (state, action) => {
+            const itemPresent = state.cart.find((item) => item.id === action.payload.id);
+        
+            if (itemPresent) {
+                if (itemPresent.quantity === 1) {
+                    // If quantity is 1, remove the item from the cart
+                    state.cart = state.cart.filter((item) => item.id !== action.payload.id);
+                } else {
+                    itemPresent.quantity--; // Decrementing the quantity of the found item
+                }
+            }
+        },
+        
         cleanCart:(state)=>{ // Reducer function to clean/reset the cart
              state.cart=[]; // Resetting the cart array to an empty array
         }

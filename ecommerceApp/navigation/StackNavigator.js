@@ -12,6 +12,8 @@ import { Ionicons } from '@expo/vector-icons';
 import ProductScreen from '../screens/ProductScreen';
 import AddAddressScreen from '../screens/AddAddressScreen';
 import AddressScreen from '../screens/AddressScreen';
+import CartScreen from '../screens/CartScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 
 //--------------------> more like react routing
@@ -37,9 +39,10 @@ const StackNavigator = () => {
         }}
         />
 {/* for profile */}
+{/* basically you move towars screens if you click on icons */}
 <Tab.Screen 
         name='Profile'
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
           tabBarLabel:"Profile",
           tabBarLabelStyle:{color:"#008E97"},
@@ -55,7 +58,7 @@ const StackNavigator = () => {
    {/* for cart */}
 <Tab.Screen 
         name='Cart'
-        component={HomeScreen}
+        component={CartScreen}
         options={{
           tabBarLabel:"Cart",
           tabBarLabelStyle:{color:"#008E97"},

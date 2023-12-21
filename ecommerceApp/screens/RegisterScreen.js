@@ -30,7 +30,7 @@ const RegisterScreen = () => {
       };
    
   
-      const response = await axios.post('http://192.168.77.201:5000/user/register', user, {
+      const response = await axios.post('http://192.168.29.163:5000/user/register', user, {
         headers: {
           'Content-Type': 'application/json',
         },

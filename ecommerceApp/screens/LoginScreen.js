@@ -26,7 +26,7 @@ const LoginScreen = () => {
   const handleLogin=async()=>{
     
     try {
-      const response=await axios.post('http://192.168.77.201:5000/user/login',{
+      const response=await axios.post('http://192.168.29.163:5000/user/login',{
         email: email,
         password: password,
       })
