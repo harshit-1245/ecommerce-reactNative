@@ -68,7 +68,7 @@ useEffect(()=>{
 },[userId,modalVisible])
 const fetchAddress=async()=>{
   try {
-     const response=await axios.get(`http://192.168.29.163:5000/user/address/${userId}`)
+     const response=await axios.get(`http://192.168.77.201:5000/user/address/${userId}`)
       const {addresses} = response.data;
 
       setAddresses(addresses)

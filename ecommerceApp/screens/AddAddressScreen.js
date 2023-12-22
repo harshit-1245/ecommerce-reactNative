@@ -1,8 +1,8 @@
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useState,useContext, useId } from 'react'
+import React, { useEffect, useState,useContext, useId, useCallback } from 'react'
 import {Feather} from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation,useFocusEffect } from "@react-navigation/native";
 import { Entypo } from '@expo/vector-icons';
 import axios from "axios"
 import { UserType } from '../UserContext';
@@ -17,7 +17,7 @@ const AddAddressScreen = () => {
   
     const fetchAddress=async()=>{
       try {
-         const response=await axios.get(`http://192.168.29.163:5000/user/address/${userId}`)
+         const response=await axios.get(`http://192.168.77.201:5000/user/address/${userId}`)
           const {addresses} = response.data;
 
           setAddresses(addresses)
@@ -28,6 +28,13 @@ const AddAddressScreen = () => {
   useEffect(()=>{
     fetchAddress()
   },[])
+
+  //using useFocus so it updates so much faster,when we navigate back it refresh back
+
+  useFocusEffect(useCallback(()=>{
+    fetchAddress();
+  },[])
+  )
 
  
 

@@ -3,10 +3,12 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { Feather } from '@expo/vector-icons';
 import { useSelector,useDispatch } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
-import {decrementQuantity, incrementQuantity} from "../redux/CartReducer"
+import {decrementQuantity, incrementQuantity, removeFromCart} from "../redux/CartReducer"
+import {useNavigation} from "@react-navigation/native"
 
 
 const CartScreen = () => {
+  const navigator = useNavigation()
   const dispatch=useDispatch()
   const cart = useSelector((state) => state.cart.cart);
 console.log("hii");
@@ -20,6 +22,10 @@ console.log("hii");
 
  const decreaseQuantity=(item)=>{
   dispatch(decrementQuantity(item))
+ }
+
+ const deleteQuantity=(item)=>{
+  dispatch(removeFromCart(item))
  }
 
 
@@ -50,6 +56,7 @@ console.log("hii");
       <Text style={{ marginHorizontal: 10 }}>EMI details Available</Text>
 
       <Pressable
+      onPress={()=>navigator.navigate("Confirm")}
         style={{
           backgroundColor: '#FFC72C',
           padding: 10,
@@ -104,7 +111,7 @@ console.log("hii");
                    {/* Delete button */}
                    <View style={{padding:10}}>
                    <Pressable 
-                   onPress={()=>deleteFromCart(iten)}
+                   onPress={()=>deleteQuantity(item)}
                    style={{ backgroundColor: 'black', padding: 8, borderRadius: 5, marginRight: 10 }}>
                     <Text style={{color:"white"}}>Delete</Text>
                   </Pressable>
