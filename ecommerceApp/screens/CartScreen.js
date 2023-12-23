@@ -11,7 +11,7 @@ const CartScreen = () => {
   const navigator = useNavigation()
   const dispatch=useDispatch()
   const cart = useSelector((state) => state.cart.cart);
-console.log("hii");
+
   const total = cart
     ?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0);

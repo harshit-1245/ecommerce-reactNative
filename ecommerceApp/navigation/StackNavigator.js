@@ -15,6 +15,7 @@ import AddressScreen from '../screens/AddressScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ConfirmationScreen from '../screens/ConfirmationSCreen';
+import OrderScreen from '../screens/OrderScreen';
 
 
 //--------------------> more like react routing
@@ -87,6 +88,7 @@ const StackNavigator = () => {
         <Stack.Screen name='Address' component={AddAddressScreen} options={{headerShown:false}} />
         <Stack.Screen name='Add' component={AddressScreen}  options={{headerShown:false}}/>
         <Stack.Screen name='Confirm' component={ConfirmationScreen}  options={{headerShown:false}}/>
+        <Stack.Screen name='Order' component={OrderScreen}  options={{headerShown:false}}/>
     </Stack.Navigator>
    </NavigationContainer>
   )
