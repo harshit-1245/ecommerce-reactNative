@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from 'react-native'
+import { View, Text, ScrollView, Pressable, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { UserType } from '../UserContext';
 import axios from "axios"
@@ -7,6 +7,7 @@ import { Entypo } from '@expo/vector-icons';
 import { FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { cleanCart } from '../redux/CartReducer';
+import RazorpayCheckout from "react-native-razorpay"
 
 
 const ConfirmationSCreen = () => {
@@ -75,6 +76,42 @@ try {
 } catch (error) {
   console.log("error",error)
 }
+}
+
+
+const pay=async()=>{
+ try {
+  const options={
+  description:"Adding to the wallet",
+  currency:"INR",
+  name:"Amazon",
+  key:"rzp_test_44pVLYU6Z50n9V",
+  amount:total*100,
+  prefill:{
+    email:"harshitsingh50621@gmail.com",
+    contact:"9670236718",
+    name:"Razorpay Software",
+  },
+  theme:{color:"#F37254"},
+  };
+
+  const data = await RazorpayCheckout.open(options)
+  const orderData = {
+    userId: userId,
+    cartItems:cart,
+    totalPrice:total,
+    shippingAddress:selectedAddress,
+    paymentMethod:selectedOptions
+  }
+  const response=await axios.post('http://192.168.77.201:5000/user/orders',orderData)
+  if(response.status === 201){
+    navigation.navigate("Order")
+    dispatch(cleanCart())
+    
+  }
+ } catch (error) {
+  console.log(error)
+ }
 }
 
 
@@ -208,7 +245,19 @@ try {
         {selectedOptions == "card" ?(
           <FontAwesome5 name="dot-circle" size={24} color="black" />
         ):(
-          <Entypo onPress={()=>setSelectedOptions("card")} name='circle' size={20} color="gray"/>
+          <Entypo onPress={() => {
+            setSelectedOptions("card");
+            Alert.alert('UPI/Debit card, pay online', '', [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel is pressed'),
+              },
+              {
+                text: 'OK',
+                onPress: pay,
+              },
+            ]);
+          }} name='circle' size={20} color="gray"/>
         )}
         
 
@@ -263,6 +312,8 @@ try {
       </Pressable>
       </View>
   )}
+
+ 
         
     </ScrollView>
   )
