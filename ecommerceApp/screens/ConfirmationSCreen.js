@@ -46,7 +46,7 @@ const ConfirmationSCreen = () => {
 
   const fetchAddress=async()=>{
     try {
-       const response=await axios.get(`http://192.168.77.201:5000/user/address/${userId}`)
+       const response=await axios.get(`http://192.168.29.163:5000/user/address/${userId}`)
         const {addresses} = response.data;
 
         setAddresses(addresses)
@@ -103,7 +103,7 @@ const pay=async()=>{
     shippingAddress:selectedAddress,
     paymentMethod:selectedOptions
   }
-  const response=await axios.post('http://192.168.77.201:5000/user/orders',orderData)
+  const response=await axios.post('http://192.168.29.164:5000/user/orders',orderData)
   if(response.status === 201){
     navigation.navigate("Order")
     dispatch(cleanCart())
