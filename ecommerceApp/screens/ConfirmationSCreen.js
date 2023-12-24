@@ -24,7 +24,41 @@ const ConfirmationSCreen = () => {
  
   const [addresses,setAddresses]=useState([]);
  
-  setUserId("6579b6c6705225971ae2e118")
+  useEffect(() => {
+    //all you need to just decode json webtoken 
+    const fetchUser = async () => {
+       try {
+         const token =await AsyncStorage.getItem("authToken")
+        if(token){
+          const base64Url = token.split('.')[1]; // Extracting the payload part of the JWT
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Replacing characters per base64url specifications
+          const decodedPayload = decodeURIComponent(atob(base64).split('').map(c => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`).join('')); // Decoding the base64 string
+
+          const decodedToken = JSON.parse(decodedPayload); // Parsing the decoded payload to get the JSON object
+          setUserId(decodedToken)
+          return decodedToken;
+        }else{
+          console.log("No token found in AsyncStorage"); // Token retrieval failed
+      return null;
+
+        }
+         
+
+       } catch (error) {
+        console.error("Error while decoding token:", error); // Error occurred while decoding token
+        return null;
+       }
+        
+        
+        
+    };
+
+    fetchUser();
+  }, []);
+
+
+
+
   const steps = [
     {
       title : "Address",content:"Address Form"
@@ -58,6 +92,7 @@ useEffect(()=>{
   fetchAddress()
 },[])
 
+console.log(userId)
 const handleOrder=async()=>{
 try {
   const orderData = {
@@ -67,7 +102,7 @@ try {
     shippingAddress:selectedAddress,
     paymentMethod:selectedOptions
   }
-  const response=await axios.post('http://192.168.77.201:5000/user/orders',orderData)
+  const response=await axios.post('http://192.168.29.163:5000/user/orders',orderData)
   if(response.status === 201){
     navigation.navigate("Order")
     dispatch(cleanCart())
@@ -103,7 +138,7 @@ const pay=async()=>{
     shippingAddress:selectedAddress,
     paymentMethod:selectedOptions
   }
-  const response=await axios.post('http://192.168.29.164:5000/user/orders',orderData)
+  const response=await axios.post('http://192.168.29.163:5000/user/orders',orderData)
   if(response.status === 201){
     navigation.navigate("Order")
     dispatch(cleanCart())

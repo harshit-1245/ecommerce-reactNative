@@ -43,6 +43,7 @@ const RegisterScreen = () => {
         setEmail('');
         setPassword('');
       } 
+      navigation.navigate("Login")
      Alert.alert('Registration successful. You have been registered successfully.');
     } catch (error) {
       Alert.alert('Registration Error: ' + error.message);
