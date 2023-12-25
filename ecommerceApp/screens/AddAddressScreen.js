@@ -6,14 +6,23 @@ import { useNavigation,useFocusEffect } from "@react-navigation/native";
 import { Entypo } from '@expo/vector-icons';
 import axios from "axios"
 import { UserType } from '../UserContext';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import JWT from 'expo-jwt';
+import { Buffer } from 'buffer';
+
+
+
+
 
 
 const AddAddressScreen = () => {
   const { userId, setUserId } = useContext(UserType);
     const navigation=useNavigation();
     const [addresses,setAddresses]=useState([]);
-   
-    setUserId("6579b6c6705225971ae2e118")
+  
+    setUserId("65888d264f4043dae8abf341")
+
+    console.log(userId)
   
     const fetchAddress=async()=>{
       try {

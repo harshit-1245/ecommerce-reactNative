@@ -24,37 +24,10 @@ const ConfirmationSCreen = () => {
  
   const [addresses,setAddresses]=useState([]);
  
-  useEffect(() => {
-    //all you need to just decode json webtoken 
-    const fetchUser = async () => {
-       try {
-         const token =await AsyncStorage.getItem("authToken")
-        if(token){
-          const base64Url = token.split('.')[1]; // Extracting the payload part of the JWT
-          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Replacing characters per base64url specifications
-          const decodedPayload = decodeURIComponent(atob(base64).split('').map(c => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`).join('')); // Decoding the base64 string
 
-          const decodedToken = JSON.parse(decodedPayload); // Parsing the decoded payload to get the JSON object
-          setUserId(decodedToken)
-          return decodedToken;
-        }else{
-          console.log("No token found in AsyncStorage"); // Token retrieval failed
-      return null;
-
-        }
-         
-
-       } catch (error) {
-        console.error("Error while decoding token:", error); // Error occurred while decoding token
-        return null;
-       }
         
         
-        
-    };
-
-    fetchUser();
-  }, []);
+ setUserId("65888d264f4043dae8abf341")
 
 
 

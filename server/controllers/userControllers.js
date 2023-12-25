@@ -139,35 +139,44 @@ const getAdrress=asyncHandler(async(req,res)=>{
   }
 })
 
-const storeOrder=asyncHandler(async(req,res)=>{
- try {
-  const {userId,cartItems,totalPrice,shippingAddress,paymentMethod}=req.body;
- const user=await User.findById(userId);
- if(!user){
-  res.status(404).json({message:"user not found"})
- }
-   //create a array of prduct objects from the cart items
-   const products = cartItems.map((item)=>({
-    name : item?.title,
-    quantity:item?.quantity,
-    price: item?.price,
-    image: item?.image
-   }))
-  //create a new order
-  const order = new Order({
-    user: userId,
-    products: products,
-    totalPrice: totalPrice,
-    shippingAddress: shippingAddress,
-    paymentMethod: paymentMethod
-  })
-await order.save()
-res.status(201).json({message:"Order created successfully"})
+const storeOrder = asyncHandler(async (req, res) => {
+  try {
+    const { userId, cartItems, totalPrice, shippingAddress, paymentMethod } = req.body;
 
- } catch (error) {
-  res.status(500).json({message:"Server error"})
- }
-})
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Create an array of product objects from the cart items
+    const products = cartItems.map((item) => ({
+      name: item?.title,
+      quantity: item?.quantity,
+      price: item?.price,
+      image: item?.image
+    }));
+
+    // Create a new order
+    const order = new Order({
+      user: userId,
+      products: products,
+      totalPrice: totalPrice,
+      shippingAddress: shippingAddress,
+      paymentMethod: paymentMethod
+    });
+
+    await order.save();
+
+    // Update user's orders array by pushing the new order's ID
+    user.orders.push(order._id);
+    await user.save();
+
+    return res.status(201).json({ message: "Order created successfully" });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 
 const getProfile=asyncHandler(async(req,res)=>{
   try {
