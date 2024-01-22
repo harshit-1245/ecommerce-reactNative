@@ -18,7 +18,7 @@ const ProductItem = ({item}) => {
   return (
    
       <Pressable style={{marginHorizontal:20,marginVertical:25}}>
-        <Image style={{width:150,height:150,resizeMode:"contain"}} source={{uri:item?.image}} />
+        <Image style={{width:150,height:150,resizeMode:"contain"}} source={{uri:item?.images}} />
         <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: 150, marginTop: 10 }}>
   {item?.title}
 </Text>

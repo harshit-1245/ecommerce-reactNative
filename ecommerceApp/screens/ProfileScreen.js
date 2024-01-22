@@ -19,7 +19,7 @@ const ProfileScreen = () => {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
-  setUserId("6579b6c6705225971ae2e118")
+ 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Profile",
@@ -97,7 +97,7 @@ const ProfileScreen = () => {
   }, []);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "white", padding:10}}>
+    <ScrollView style={{ flex: 1, backgroundColor: "white", padding:10,marginTop:50}}>
       <Text style={{ fontSize: 16, fontWeight: "bold" }}>
         Welcome {user?.name}
       </Text>

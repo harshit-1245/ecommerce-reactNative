@@ -18,6 +18,7 @@ import {BottomModal, ModalContent, SlideAnimation} from "react-native-modals"
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import base64 from "base-64"
 
 import { UserType } from '../UserContext';
 
@@ -27,6 +28,7 @@ import { UserType } from '../UserContext';
 
 const HomeScreen = () => {
   const {userId,setUserId}=useContext(UserType)
+  const [user,setUser]=useState()
   const [selectedAddress,setSelectedAddress]=useState("")
   const navigation=useNavigation()
   const [addresses,setAddresses]=useState([]);
@@ -38,30 +40,58 @@ const HomeScreen = () => {
     { label: "electronics", value: "electronics" },
     { label: "women's clothing", value: "women's clothing" },
   ]);
-  const [filter,setFilter]=useState([])
+  const [filter,setFilter]=useState({})
   
 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState({});
 
   const [modalVisible,setModelVisible]=useState(false)
 
- setUserId("65888d264f4043dae8abf341")
-
-  useEffect(()=>{
-    const fetchApi=async()=>{
-      try {
-        const response=await axios.get('https://fakestoreapi.com/products');
-         setProducts(response.data);
-         setFilter(response.data)
-      } catch (error) {
-        console.error(error)
+ 
+  const decodeJWTToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+  
+      if (token) {
+        const [headerEncoded, payloadEncoded, signatureEncoded] = token.split('.');
+        const decodedToken = {
+          header: JSON.parse(base64.decode(headerEncoded)),
+          payload: JSON.parse(base64.decode(payloadEncoded)),
+          signature: signatureEncoded, // This remains base64 encoded
+        };
+  
+        // Access the decoded token's payload.userId
+        const userId = decodedToken.payload.userId;
+       setUserId(userId)
+      } else {
+        console.error('Token not found in AsyncStorage');
       }
-     
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      // Handle error as needed
     }
-    fetchApi();
-  },[])
+  };
+  
+  
+  
+   useEffect(()=>{
+    const fetchUser=async()=>{
+     try {
+      const response=await fetch(`http://192.168.29.163:5000/user/profile/${userId}`)
+      const data=await response.json()
+     
+      setUser(data)
+     } catch (error) {
+      console.log(error)
+     }
+    }
+    fetchUser()
+    decodeJWTToken();
+   },[])
+
 
 //fetching address
+//call into context
 
 useEffect(()=>{
     if(userId){
@@ -79,38 +109,10 @@ const fetchAddress=async()=>{
   }
 }
 
-
-
-  const filterProduct=(cat)=>{
-    const updateList=products.filter((x)=>x.category === cat);
-    setFilter(updateList);
-  }
   
-
-const onGenderOpen= useCallback(()=>{
-   setOpen(!open)
-},[])
  //using useSelector
  const cart=useSelector((state)=>state.cart.cart)
  
-
-const pickerStyle = {
-  borderColor: "#B7B7B7",
-  height: 30,
-};
-
-// Conditionally apply marginBottom based on the 'open' state
-if (open) {
-  pickerStyle.marginBottom = 50;
-} else {
-  pickerStyle.marginBottom = 15;
-}
-
-
-
-
-
-
   return (
 
     <>
@@ -237,41 +239,11 @@ if (open) {
           marginTop: 20,
           width: "45%",
         }}>
-          <DropDownPicker
-            style={pickerStyle}
-            open={open}
-            value={category}
-            items={items}
-            setOpen={setOpen}
-            setValue={setCategory}
-            setItems={setItems}
-            placeholder="Choose category"
-            placeholderStyle={{ color: "#808080" }} // Adjust placeholder style if needed
-            onOpen={onGenderOpen}
-            onChangeValue={(value)=>{
-              setCategory(value); // Set the category state based on selected value
-          filterProduct(value);
-            }}
-            zIndex={3000}
-            zIndexInverse={1000}
-          />
+          
         </View>
 
           
-             {/* Product section */}
-            
-             <View 
-             
-             style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-       {filter.map((item, index) => (
-         <View key={index} style={{ width: '48%', marginBottom: 10 }}>
-           <ProductItem item={item} />
-         </View>
-       ))}
-     </View>
-          
-            
-      </ScrollView>
+   </ScrollView>
     </SafeAreaView>
 
     {/*Now designing Bottom MOdals  */}

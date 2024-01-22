@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native'
+import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { UserType } from '../UserContext';
 import axios from "axios"
@@ -24,13 +24,21 @@ const ConfirmationSCreen = () => {
  
   const [addresses,setAddresses]=useState([]);
  
-
-        
-        
- setUserId("65888d264f4043dae8abf341")
-
-
-
+ useEffect(()=>{
+    const fetchUser=async()=>{
+     try {
+      const response=await fetch(`http://192.168.29.163:7000/user/${userId}`)
+      const data=await response.json()
+      
+      SetUsers(data)
+     } catch (error) {
+      console.log(error)
+     }
+    }
+    fetchUser()
+    
+   },[])
+  
 
   const steps = [
     {
@@ -321,10 +329,32 @@ const pay=async()=>{
       </View>
   )}
 
- 
+ {currentStep == 4 && 
+    <View style={styles.container}>
+    <View>
+      <Image style={styles.image} source={require('../assets/ecommerceImages/order.png')} />
+    </View>
+    <Text style={styles.thankYouText}>Thank You, Come Again</Text>
+  </View>
+ }
         
     </ScrollView>
   )
 }
 
 export default ConfirmationSCreen
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: "100%",
+    height: 200,
+  },
+  thankYouText: {
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});
